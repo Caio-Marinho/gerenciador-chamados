@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <title>Meus chamados</title>
+</head>
+<body>
+    <main class="container">
+        <header class="header">
+            <div>
+                <a class="back-link" href="/">Voltar</a>
+                <h1>Meus chamados</h1>
+            </div>
+            <a class="btn-secondary nav-link" href="/responsavel">Área do responsável</a>
+        </header>
+
+        <section class="identity-gate" id="identificacaoCliente">
+            <h2>Identifique-se</h2>
+            <p>Informe seu nome para consultar os chamados associados a você.</p>
+            <form id="formIdentificacao" class="identity-form">
+                <label class="search-field" for="nomeCliente">
+                    <span>Seu nome</span>
+                    <input id="nomeCliente" name="nome" maxlength="100" autocomplete="name" required>
+                </label>
+                <button class="btn-primary" type="submit">Continuar</button>
+            </form>
+            <p class="form-error hidden" id="erroIdentificacao" role="alert"></p>
+        </section>
+
+        <section class="customer-area hidden" id="areaCliente">
+            <div class="customer-heading">
+                <div>
+                    <span class="entry-kicker">CLIENTE</span>
+                    <h2 id="nomeClienteAtivo"></h2>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-secondary" id="trocarCliente" type="button">Trocar cliente</button>
+                    <button class="btn-primary" id="novoChamado" type="button">+ Novo chamado</button>
+                </div>
+            </div>
+
+            <section class="list-toolbar" aria-label="Pesquisa e filtros">
+                <label class="search-field" for="pesquisaChamados">
+                    <span>Pesquisar meus chamados</span>
+                    <input id="pesquisaChamados" type="search" placeholder="ID, título, descrição, status, prioridade, responsável...">
+                </label>
+                <button class="btn-secondary" id="abrirFiltros" type="button">Filtrar</button>
+                <span class="result-count" id="totalChamados" aria-live="polite">Carregando chamados...</span>
+            </section>
+
+            <div class="quick-filters" id="filtrosRapidos" aria-label="Filtros rápidos por status e prioridade"></div>
+            <div class="active-filters" id="filtrosAtivos" aria-label="Filtros ativos"></div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="col" aria-sort="ascending"><button class="sort-button" type="button" data-sort="id">ID <span aria-hidden="true">↑</span></button></th>
+                            <th scope="col" aria-sort="none"><button class="sort-button" type="button" data-sort="titulo">Título <span aria-hidden="true">↕</span></button></th>
+                            <th scope="col" aria-sort="none"><button class="sort-button" type="button" data-sort="status">Status <span aria-hidden="true">↕</span></button></th>
+                            <th scope="col" aria-sort="none"><button class="sort-button" type="button" data-sort="prioridade">Prioridade <span aria-hidden="true">↕</span></button></th>
+                            <th scope="col" aria-sort="none"><button class="sort-button" type="button" data-sort="responsavel">Responsável <span aria-hidden="true">↕</span></button></th>
+                            <th scope="col" aria-sort="none"><button class="sort-button" type="button" data-sort="data">Abertura <span aria-hidden="true">↕</span></button></th>
+                            <th scope="col" aria-sort="none"><button class="sort-button" type="button" data-sort="fechamento">Fechamento <span aria-hidden="true">↕</span></button></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaChamados">
+                        <tr><td colspan="7">Identifique-se para carregar seus chamados.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <div class="modal hidden" id="modalFiltros" role="dialog" aria-modal="true" aria-labelledby="tituloFiltros">
+        <section class="modal-content">
+            <h2 id="tituloFiltros">Filtrar chamados</h2>
+            <form id="formFiltros">
+                <div class="form-group">
+                    <label for="filtroStatus">Status</label>
+                    <select id="filtroStatus" name="status"><option value="">Todos</option></select>
+                </div>
+                <div class="form-group">
+                    <label for="filtroPrioridade">Prioridade</label>
+                    <select id="filtroPrioridade" name="prioridade"><option value="">Todas</option></select>
+                </div>
+                <div class="form-group">
+                    <label for="filtroResponsavel">Responsável</label>
+                    <select id="filtroResponsavel" name="responsavel"><option value="">Todos</option></select>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-secondary" id="cancelarFiltros" type="button">Cancelar</button>
+                    <button class="btn-primary" type="submit">Aplicar filtros</button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <div class="modal hidden" id="modalChamado" role="dialog" aria-modal="true" aria-labelledby="tituloModalChamado">
+        <section class="modal-content modal-wide">
+            <h2 id="tituloModalChamado">Chamado</h2>
+            <form id="formChamado">
+                <div class="form-group">
+                    <label for="chamadoCliente">Cliente</label>
+                    <input id="chamadoCliente" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="chamadoTitulo">Título</label>
+                    <input id="chamadoTitulo" maxlength="150" required>
+                </div>
+                <div class="form-group">
+                    <label for="chamadoDescricao">Descrição</label>
+                    <textarea id="chamadoDescricao" rows="4" maxlength="500" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="chamadoPrioridade">Prioridade</label>
+                    <select id="chamadoPrioridade" required></select>
+                </div>
+                <div class="form-group">
+                    <label for="chamadoResponsavel">Responsável</label>
+                    <select id="chamadoResponsavel" required></select>
+                </div>
+                <input type="checkbox" id="indicarAuto">
+                <label for="indicarAuto">
+                    Atribuir Automaticamente a um Responsável
+                </label>
+                <dl class="ticket-meta" id="detalhesChamado">
+                    <div><dt>Status</dt><dd id="chamadoStatus"></dd></div>
+                    <div><dt>Abertura</dt><dd id="chamadoAbertura"></dd></div>
+                    <div><dt>Fechamento</dt><dd id="chamadoFechamento"></dd></div>
+                </dl>
+                <p class="read-only-note hidden" id="avisoSomenteLeitura">Este chamado não está aberto. Você pode acompanhar o andamento, mas não editar os dados.</p>
+                <div class="modal-actions">
+                    <button class="btn-secondary" id="fecharChamado" type="button">Fechar</button>
+                    <button class="btn-primary" id="salvarChamado" type="submit">Salvar</button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <script src="./assets/js/portal-cliente.js"></script>
+</body>
+</html>

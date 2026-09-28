@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <title>Fila de atendimento</title>
+</head>
+<body>
+    <main class="container">
+        <header class="header">
+            <div>
+                <a class="back-link" href="/">Voltar</a>
+                <h1>Fila de atendimento</h1>
+            </div>
+        </header>
+
+        <section class="list-toolbar" aria-label="Pesquisar e filtrar a fila">
+            <label class="search-field responsible-select" for="responsavelAtual">
+                <span>Quem está atendendo?</span>
+                <select id="responsavelAtual" required>
+                    <option value="">Carregando responsáveis...</option>
+                </select>
+            </label>
+            <label class="search-field" for="pesquisaFila">
+                <span>Pesquisar na fila</span>
+                <input id="pesquisaFila" type="search" placeholder="ID, cliente, título, descrição...">
+            </label>
+            <button class="btn-secondary" id="abrirFiltrosFila" type="button">Filtrar</button>
+            <span class="result-count" id="totalFila" aria-live="polite">Selecione seu nome</span>
+        </section>
+
+        <div class="quick-filters" id="filtrosRapidosFila" aria-label="Filtros rápidos por status e prioridade"></div>
+        <div class="active-filters" id="filtrosAtivosFila" aria-label="Filtros ativos"></div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col" aria-sort="ascending"><button class="sort-button" type="button" data-sort="id">ID <span aria-hidden="true">↑</span></button></th>
+                        <th scope="col" aria-sort="none"><button class="sort-button" type="button" data-sort="cliente">Cliente <span aria-hidden="true">↕</span></button></th>
+                        <th scope="col" aria-sort="none"><button class="sort-button" type="button" data-sort="titulo">Título <span aria-hidden="true">↕</span></button></th>
+                        <th scope="col" aria-sort="none"><button class="sort-button" type="button" data-sort="status">Status <span aria-hidden="true">↕</span></button></th>
+                        <th scope="col" aria-sort="none"><button class="sort-button" type="button" data-sort="prioridade">Prioridade <span aria-hidden="true">↕</span></button></th>
+                        <th scope="col" aria-sort="none"><button class="sort-button" type="button" data-sort="responsavel">Responsável <span aria-hidden="true">↕</span></button></th>
+                        <th scope="col" aria-sort="none"><button class="sort-button" type="button" data-sort="data">Abertura <span aria-hidden="true">↕</span></button></th>
+                        <th scope="col" aria-sort="none"><button class="sort-button" type="button" data-sort="fechamento">Fechamento <span aria-hidden="true">↕</span></button></th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaFila">
+                    <tr><td colspan="8">Selecione seu nome para carregar os chamados.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <div class="modal hidden" id="modalFiltrosFila" role="dialog" aria-modal="true" aria-labelledby="tituloFiltrosFila">
+        <section class="modal-content">
+            <h2 id="tituloFiltrosFila">Filtrar fila</h2>
+            <form id="formFiltrosFila">
+                <div class="form-group">
+                    <label for="filtroStatusFila">Status</label>
+                    <select id="filtroStatusFila"><option value="">Todos</option></select>
+                </div>
+                <div class="form-group">
+                    <label for="filtroPrioridadeFila">Prioridade</label>
+                    <select id="filtroPrioridadeFila"><option value="">Todas</option></select>
+                </div>
+                <div class="form-group">
+                    <label for="filtroClienteFila">Cliente</label>
+                    <select id="filtroClienteFila"><option value="">Todos</option></select>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-secondary" id="limparFiltrosFila" type="button">Limpar filtros</button>
+                    <button class="btn-secondary" id="cancelarFiltrosFila" type="button">Cancelar</button>
+                    <button class="btn-primary" type="submit">Aplicar filtros</button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <div class="modal hidden" id="modalAtendimento" role="dialog" aria-modal="true" aria-labelledby="tituloModalAtendimento">
+        <section class="modal-content modal-wide">
+            <h2 id="tituloModalAtendimento">Atualizar chamado</h2>
+            <form id="formAtendimento">
+                <div class="form-group">
+                    <label for="atendimentoCliente">Cliente</label>
+                    <input id="atendimentoCliente" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="atendimentoTitulo">Título</label>
+                    <input id="atendimentoTitulo" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="atendimentoDescricao">Descrição</label>
+                    <textarea id="atendimentoDescricao" rows="4" readonly></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="atendimentoStatus">Status</label>
+                    <select id="atendimentoStatus" required></select>
+                </div>
+                <div class="form-group">
+                    <label for="atendimentoPrioridade">Prioridade</label>
+                    <select id="atendimentoPrioridade" required></select>
+                </div>
+                <div class="form-group">
+                    <label for="atendimentoResponsavel">Responsável</label>
+                    <select id="atendimentoResponsavel" required></select>
+                </div>
+                <dl class="ticket-meta">
+                    <div><dt>Abertura</dt><dd id="atendimentoAbertura"></dd></div>
+                    <div><dt>Fechamento</dt><dd id="atendimentoFechamento"></dd></div>
+                </dl>
+                <div class="modal-actions">
+                    <button class="btn-secondary" id="cancelarAtendimento" type="button">Cancelar</button>
+                    <button class="btn-primary" type="submit">Salvar alterações</button>
+                </div>
+            </form>
+        </section>
+    </div>
+    <script src="./assets/js/responsavel.js"></script>
+</body>
+</html>

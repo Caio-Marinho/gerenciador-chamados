@@ -1,0 +1,14 @@
+# Dados locais criados ao executar MySQL fora do volume Docker.
+/data/
+/mysql-data/
+
+# Arquivos transitórios do servidor MySQL.
+*.log
+*.pid
+*.sock
+*.err
+*.ibd
+ibdata*
+ib_logfile*
+mysql-bin.*
+undo_*.log

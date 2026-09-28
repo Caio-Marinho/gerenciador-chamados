@@ -1,0 +1,5 @@
+# Logs e caches locais do Nginx.
+/logs/
+*.log
+*.pid
+.cache/

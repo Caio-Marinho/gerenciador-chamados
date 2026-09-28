@@ -1,0 +1,19 @@
+# Arquivos de ambiente e segredos locais.
+.env
+.env.*
+!.env.example
+
+# Arquivos temporários e logs gerados localmente.
+*.log
+*.tmp
+*.swp
+*.swo
+*~
+.cache/
+tmp/
+temp/
+
+# Arquivos criados pelo sistema operacional.
+.DS_Store
+Thumbs.db
+Desktop.ini

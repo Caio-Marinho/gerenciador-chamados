@@ -1,0 +1,89 @@
+# Define os serviços da aplicação para execução conjunta com `docker compose`.
+# Compose cria uma rede padrão compartilhada: os containers podem se localizar
+# pelo nome do serviço (por exemplo, o backend acessa o host `mysql`).
+# O arquivo .env na raiz fornece valores para interpolação `${VAR}`; `env_file`
+# também injeta as variáveis indicadas no ambiente de cada container.
+services:
+  # Banco de dados: armazena os registros e valores de referência da aplicação.
+  mysql:
+    # Usa database/ como contexto de build; o Dockerfile adiciona init.sql e
+    # my.cnf à imagem oficial do MySQL.
+    build: ./database
+    # Reinicia o container quando ele termina ou quando o daemon Docker reinicia.
+    restart: always
+    # Define MYSQL_DATABASE, MYSQL_USER, MYSQL_PASSWORD e MYSQL_ROOT_PASSWORD
+    # para a imagem oficial inicializar o banco e as credenciais.
+    env_file:
+      - .env
+    ports:
+      # Sintaxe host:container. DB_PORT pode ser 3306 ou outra porta livre no
+      # host; o MySQL sempre escuta em 3306 dentro do container.
+      - "${DB_PORT}:3306"
+    volumes:
+      # Monta o volume nomeado no diretório de dados do MySQL. Os dados ficam
+      # fora do filesystem efêmero do container e sobrevivem a `compose down`.
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      # Verifica se o servidor responde localmente antes de liberar o backend.
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      # Executa a verificação a cada 5 s; cada tentativa pode levar até 3 s.
+      interval: 5s
+      timeout: 3s
+      # Marca o serviço como unhealthy após cinco falhas consecutivas.
+      retries: 5
+      # Dá até 30 s de tolerância inicial para o MySQL criar/abrir o banco.
+      start_period: 30s
+
+  # API: recebe as chamadas do frontend, valida os dados e acessa o MySQL.
+  backend:
+    # Constrói a imagem usando backend/ como contexto.
+    build: ./backend
+    restart: always
+    # Disponibiliza ao processo Python as credenciais de acesso ao banco.
+    env_file:
+      - .env
+    environment:
+      # Sobrescreve DB_HOST do .env: dentro da rede Compose, `mysql` é o DNS do
+      # serviço de banco. A porta usada entre containers continua sendo 3306.
+      - DB_HOST=mysql
+    ports:
+      # Expõe a API diretamente no host para depuração e acesso a /docs; o
+      # caminho normal do frontend passa pelo Nginx em /api/.
+      - "5000:5000"
+    depends_on:
+      mysql:
+        # Aguarda o healthcheck bem-sucedido, pois apenas iniciar o container
+        # MySQL não garante que o servidor já aceite conexões.
+        condition: service_healthy
+
+  # Interface web: serve HTML, CSS e JavaScript como arquivos estáticos.
+  frontend:
+    # Constrói a imagem usando frontend/ como contexto.
+    build: ./frontend
+    restart: always
+    # Injeta as variáveis do .env no ambiente do container. O frontend estático
+    # atual não lê esses valores, mas esta configuração mantém o ambiente comum.
+    env_file:
+      - .env
+
+  # Gateway HTTP: ponto de entrada para o navegador e roteador para os serviços.
+  nginx:
+    # Constrói a imagem com proxy/nginx.conf como configuração ativa.
+    build: ./proxy
+    restart: always
+    ports:
+      # Publica HTTP na porta 80 do host para a porta 80 do Nginx no container.
+      - "80:80"
+    depends_on:
+      backend:
+        # Garante a ordem de início, mas não verifica prontidão HTTP da API.
+        condition: service_started
+      frontend:
+        # Inicia o Nginx depois que o container do frontend começou.
+        condition: service_started
+
+# Declara o volume nomeado gerenciado pelo Docker Compose. `docker compose down`
+# remove containers e rede, mas preserva o volume; `down --volumes` também o
+# apaga e remove permanentemente os dados armazenados pelo MySQL.
+volumes:
+  mysql_data:

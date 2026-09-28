@@ -1,0 +1,14 @@
+# Dependências locais, caso o frontend passe a usar um gerenciador Node.
+node_modules/
+
+# Saídas de build e cobertura.
+dist/
+build/
+coverage/
+.cache/
+
+# Logs dos gerenciadores de pacotes.
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
