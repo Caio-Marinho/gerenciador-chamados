@@ -241,3 +241,7 @@ Ao acessar por meio do Nginx, acrescente o prefixo `/api` às rotas acima (por e
 ## Dados iniciais
 
 O script SQL cria as prioridades **Baixa**, **Média**, **Alta** e **Urgente**; os status **Aberto**, **Pendente**, **Em Andamento**, **resolvido** e **Fechado**; e os responsáveis **Ana Souza**, **Carlos Silva** e **Mariana Lima**. Eles são usados como dados de exemplo e podem ser alterados em `database/init.sql` antes da primeira inicialização do banco.
+
+## Autor
+
+- [Caio Marinho](https://github.com/Caio-Marinho)
