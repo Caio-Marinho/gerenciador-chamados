@@ -435,8 +435,9 @@ function abrirModalChamado(chamadoId = null) {
     document.getElementById('chamadoTitulo').readOnly = !editavel;
     document.getElementById('chamadoDescricao').readOnly = !editavel;
     document.getElementById('chamadoPrioridade').disabled = !editavel;
+    // A atribuição é definida apenas na criação; a edição do cliente não altera responsável.
     document.getElementById('chamadoResponsavel').disabled = !editavel;
-    document.getElementById('indicarAutoContainer').innerHTML = !editavel ? '' : `
+    document.getElementById('indicarAutoContainer').innerHTML = !editavel || chamado ? '' : `
         <label class="auto-assignment-option" for="indicarAuto">
             <input type="checkbox" id="indicarAuto" name="atribuir_auto">
             <span class="auto-assignment-copy">
