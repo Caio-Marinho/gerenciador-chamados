@@ -37,6 +37,10 @@ As tecnologias foram escolhidas para manter o desenvolvimento direto e facilitar
 - **Docker Compose:** inicia o banco, a API, o frontend e o proxy como serviços coordenados. Assim, outras pessoas podem executar o mesmo ambiente com Docker, sem instalar e configurar cada componente manualmente.
 - **Nginx:** oferece um único ponto de entrada para a aplicação e encaminha as requisições para o frontend ou para a API.
 
+## Justificativa da arquitetura
+
+A arquitetura separa a aplicação em serviços e módulos com responsabilidades definidas. O Docker Compose descreve como os serviços se conectam e quais configurações usam, facilitando replicar o ambiente de desenvolvimento em outras máquinas e reduzindo diferenças entre instalações. A divisão em pastas também indica onde cada parte do sistema está: `frontend/` contém as páginas e seus recursos, `backend/` reúne a API e seus módulos (rotas, modelos, schemas e utilitários), `database/` guarda a inicialização do MySQL e `proxy/` configura o Nginx. Essa organização ajuda a localizar o código responsável por cada função e a investigar falhas no componente correspondente.
+
 ## Instalação e execução
 
 Baixe o Docker Desktop pelo [site oficial do Docker](https://www.docker.com/get-started/) ou siga o guia do Docker Engine para Linux. Depois de instalar, mantenha o Docker em execução enquanto usa o projeto.
@@ -97,9 +101,37 @@ Baixe o Docker Desktop pelo [site oficial do Docker](https://www.docker.com/get-
 
    No PowerShell e na integração WSL com Docker Desktop, os comandos não precisam de `sudo`. Se você optar por instalar e executar o Docker Engine diretamente dentro do WSL, siga os passos Linux acima para configurar o grupo `docker`; essa alternativa é separada da integração com Docker Desktop.
 
+### Baixar o projeto e configurar o Git
+
+1. Verifique se o Git está instalado:
+
+   ```bash
+   git --version
+   ```
+
+   Se o comando não existir, instale o Git para seu sistema operacional pelo [site oficial](https://git-scm.com/downloads).
+
+2. Configure seu nome e e-mail para identificar os commits que você criar. Faça isso uma vez por computador, substituindo os exemplos pelos seus dados:
+
+   ```bash
+   git config --global user.name "Seu Nome"
+   git config --global user.email "seu-email@exemplo.com"
+   ```
+
+   Essa identidade é necessária para criar commits; para apenas clonar e executar o projeto, essa configuração pode ser feita depois.
+
+3. Clone o repositório e entre na pasta do projeto:
+
+   ```bash
+   git clone https://github.com/Caio-Marinho/gerenciador-chamados.git
+   cd gerenciador-chamados
+   ```
+
+   Se você já baixou ou recebeu o projeto, não precisa cloná-lo novamente: abra um terminal na pasta raiz que contém `docker-compose.yml`.
+
 ### Configurar e iniciar o projeto
 
-Com o Docker em execução, abra um terminal na pasta raiz do projeto, onde está `docker-compose.yml`. Crie um arquivo chamado `.env` nessa pasta:
+Com o Docker em execução e o terminal aberto na pasta raiz do projeto, crie um arquivo chamado `.env` nessa pasta:
 
 ```env
 DB_USER=chamados
