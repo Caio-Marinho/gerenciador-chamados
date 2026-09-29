@@ -211,6 +211,56 @@ tbody tr:hover {
 
 }
 
+/* Opção de atribuição automática injetada no formulário de novo chamado. */
+.auto-assignment-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 0 0 20px;
+    padding: 14px 16px;
+    border: 1px solid #c8e2dc;
+    border-radius: 10px;
+    background: #f1f8f6;
+    color: #285f54;
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+}
+
+.auto-assignment-option:hover {
+    border-color: #80b9ab;
+    background: #eaf5f2;
+}
+
+.auto-assignment-option:focus-within {
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.16);
+}
+
+.auto-assignment-option input {
+    flex: 0 0 auto;
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    accent-color: #285f54;
+    cursor: pointer;
+}
+
+.auto-assignment-copy {
+    display: grid;
+    gap: 4px;
+}
+
+.auto-assignment-copy strong {
+    font-size: 14px;
+}
+
+.auto-assignment-copy small {
+    color: #58756f;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.45;
+}
+
 .modal-actions {
     display: flex;
 

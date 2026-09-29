@@ -449,7 +449,12 @@ function abrirModal(chamadoId) {
     document.getElementById('atendimentoDescricao').value = chamado.Descricao ?? '';
     document.getElementById('atendimentoStatus').value = String(chamado.id_status);
     document.getElementById('atendimentoPrioridade').value = String(chamado.id_prioridade);
+    document.getElementById('atendimentoPrioridade').disabled = true // Bloqueia prioridade se o chamado estiver encerrado
     document.getElementById('atendimentoResponsavel').value = String(chamado.id_responsavel);
+    document.getElementById('atendimentoStatus').addEventListener('change', () => {
+        document.getElementById('atendimentoResponsavel').disabled = document.getElementById('atendimentoStatus').value != 1;  // Bloqueia responsavel se o chamado já tiver começado caso contrario permite a troca de responsavel.
+    });
+    document.getElementById('atendimentoResponsavel').disabled = chamado.id_status != 1;
     document.getElementById('atendimentoAbertura').textContent = formatarData(chamado.data_hora_abertura);
     document.getElementById('atendimentoFechamento').textContent = chamado.data_hora_fechamento
         ? formatarData(chamado.data_hora_fechamento)

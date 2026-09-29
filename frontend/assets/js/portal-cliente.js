@@ -42,6 +42,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('trocarCliente').addEventListener('click', trocarCliente);
     document.getElementById('fecharChamado').addEventListener('click', fecharModalChamado);
     document.getElementById('formChamado').addEventListener('submit', salvarChamado);
+    // O checkbox é criado dinamicamente; a delegação mantém o evento funcional.
+    document.getElementById('formChamado').addEventListener('change', event => {
+        if (event.target.id !== 'indicarAuto') return;
+        document.getElementById('chamadoResponsavel').disabled = event.target.checked;
+    });
     document.querySelectorAll('[data-sort]').forEach(botao => {
         botao.addEventListener('click', () => ordenarPor(botao.dataset.sort));
     });
@@ -430,6 +435,16 @@ function abrirModalChamado(chamadoId = null) {
     document.getElementById('chamadoTitulo').readOnly = !editavel;
     document.getElementById('chamadoDescricao').readOnly = !editavel;
     document.getElementById('chamadoPrioridade').disabled = !editavel;
+    document.getElementById('chamadoResponsavel').disabled = !editavel;
+    document.getElementById('indicarAutoContainer').innerHTML = !editavel ? '' : `
+        <label class="auto-assignment-option" for="indicarAuto">
+            <input type="checkbox" id="indicarAuto" name="atribuir_auto">
+            <span class="auto-assignment-copy">
+                <strong>Atribuir automaticamente</strong>
+                <small>Vamos direcionar o chamado para quem tiver menos atendimentos ativos.</small>
+            </span>
+        </label>
+    `;
     document.getElementById('salvarChamado').classList.toggle('hidden', !editavel);
     preencherPrioridades(chamado?.id_prioridade ?? '');
     preencherResponsaveis(chamado?.id_responsavel ?? '');
@@ -457,14 +472,6 @@ function preencherResponsaveis(selecionada) {
     });
     select.value = selecionada ? String(selecionada) : '';
 }
-
-document.getElementById('indicarAuto').addEventListener('change', function () {
-    if (this.checked) {
-        document.getElementById('chamadoResponsavel').disabled = true;
-    } else {
-        document.getElementById('chamadoResponsavel').disabled = false;
-    }
-})
 
 /** Fecha o modal de chamado e limpa o formulário e a seleção atual. */
 function fecharModalChamado() {
